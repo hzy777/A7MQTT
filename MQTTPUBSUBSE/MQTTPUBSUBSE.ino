@@ -8,12 +8,10 @@ int baseIndex;
 long lastMsg = 0;//存放时间的变量 
 
 unsigned char subback[127];
+String subloadtopic;
+String subloadmessage;
 
 SoftwareSerial AT(3, 2);//实际只用2号脚发送AT指令,由硬串口RX接收数据
-
-
-
-
 
 
 void setup() {
@@ -32,17 +30,31 @@ digitalWrite(4,LOW);
 }
 
 void loop() {
-
-
-int j= BackBit(200);
-for(int i=0;i<j;i++){
-  Serial.print(subback[i]);
-  }
- Serial.println();
-  
-pub_topic_delay("888","HelloWorld!",15000);
-
+   int j= BackBit(200);
+   anal();
+   pub_topic_delay("888","HelloWorld!",15000);
+   Serial.println(subloadtopic);
+   Serial.println(subloadmessage);
 }
+
+
+
+
+void anal(){
+  if(subback[0]==48){
+    int alllength=subback[1];
+    int topiclength=subback[3];
+    int messageLength=alllength-topiclength-2;
+    subloadtopic="";
+    for(int i=4;i<4+topiclength;i++){
+      subloadtopic+=char(subback[i]);
+      }
+    subloadmessage="";
+    for(int j=4+topiclength;j<4+topiclength+messageLength;j++){
+    subloadmessage+=char(subback[j]);
+      }  
+    }
+  }
 
 
 
